@@ -117,5 +117,4 @@ jobs:
 
         - name: tests-on-prod
           run: echo Testing the production...
-          
-Update python-greetings.yml · BunnyBaklazan/TheFirstOne@2dbdfd5
+        
