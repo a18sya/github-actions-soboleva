@@ -28,11 +28,17 @@ jobs:
     needs: install-pip-deps
     
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/deploy-to-dev
+      - uses: actions/checkout@v3.5.2
 
       - name: deploy-to-dev
         run: echo Deploying to the dev environment...
+      - name: Clone python-greetings repository
+      - uses: actions/checkout@v3.5.2
+        with:
+          repository: mtararujs/python-greetings
+          path: C:\Users\Admin\Documents\RTU\actions-runner\_work\github-actions-soboleva\github-actions-soboleva\new-folder
+          method: https://github.com/mtararujs/python-greetings
+
         
   tests-on-dev:
     name: tests-on-dev
