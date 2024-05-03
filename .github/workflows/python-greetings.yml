@@ -1,31 +1,28 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   install-pip-deps:
     name: install-pip-deps
     runs-on: self-hosted
     
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/install-pip-deps
+      - name: Clone python-greetings
+        uses: actions/checkout@v3.5.2
+        with:
+          repository: mtararujs/python-greetings
+          
+      - name: smart move
+        run: cd {{github.repository}}\python-greetings
 
-      - name: install-pip-deps
-        run: echo Installing all required dependencies...
-
+      - name: Install dependencies
+        run: pip install -r requirements.txt
         
   deploy-to-dev:
     name: deploy-to-dev
@@ -38,7 +35,6 @@ jobs:
 
       - name: deploy-to-dev
         run: echo Deploying to the dev environment...
-
         
   tests-on-dev:
     name: tests-on-dev
@@ -51,7 +47,6 @@ jobs:
 
       - name: tests-on-dev
         run: echo Testing the dev environment...
-
         
   deploy-to-staging:
       name: deploy-to-staging
@@ -64,7 +59,6 @@ jobs:
 
         - name: deploy-to-staging
           run: echo Deploying to staging...
-
           
   tests-on-staging:
       name: tests-on-staging
@@ -77,7 +71,6 @@ jobs:
 
         - name: tests-on-staging
           run: echo Tests on staging...
-
         
   deploy-to-preprod:
       name: deploy-to-preprod
@@ -90,7 +83,6 @@ jobs:
 
         - name: deploy-to-preprod
           run: echo Deploying to pre-production...
-
         
   tests-on-preprod:
       name: tests-on-preprod
@@ -103,7 +95,6 @@ jobs:
 
         - name: tests-on-preprod
           run: echo Testing the pre-production...
-
         
   deploy-to-prod:
       name: deploy-to-prod
@@ -116,7 +107,6 @@ jobs:
 
         - name: deploy-to-prod
           run: echo Deploying to production...
-
         
   tests-on-prod:
       name: tests-on-prod
@@ -129,4 +119,3 @@ jobs:
 
         - name: tests-on-prod
           run: echo Testing the production...
-          
