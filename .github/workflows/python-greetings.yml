@@ -29,10 +29,10 @@ jobs:
     
     steps:
       - name: Clone python-greetings repository
-      - uses: actions/checkout@v3.5.2    
+        uses: actions/checkout@v3.5.2    
 
       - name: Clone python-greetings repository
-      - uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v3.5.2
         with:
           repository: mtararujs/python-greetings
           path: C:\Users\Admin\Documents\RTU\actions-runner\_work\github-actions-soboleva\github-actions-soboleva\new-folder
