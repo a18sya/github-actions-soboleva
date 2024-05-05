@@ -12,7 +12,6 @@ jobs:
   install-pip-deps:
     name: install-pip-deps
     runs-on: self-hosted
-    
     steps:
       - name: Clone python-greetings repository
         uses: actions/checkout@v3.5.2
@@ -21,7 +20,6 @@ jobs:
           path: python-greetings
           ref: 4e911440a9886c7c26ccbb4eb55f0bc2a5067b51
           fetch-depth: 0
-        
       - name: Install dependencies
         run: |
           cd python-greetings
@@ -31,24 +29,19 @@ jobs:
     name: deploy-to-dev
     runs-on: self-hosted
     needs: install-pip-deps
-    
     steps:
       - name: deploy-to-dev
         uses: actions/checkout@v3.5.2
-        
       - name: Izvade
         run: echo Deploying to dev
-
       - name: Checkout python-greetings repository
         uses: actions/checkout@v3.5.2
         with:
           repository: 'mtararujs/python-greetings'
           path: 'python-greetings'
           ref: '4e911440a9886c7c26ccbb4eb55f0bc2a5067b51'
-      
       - name: Stop existing service
         run: cmd /c "pm2 delete greetings-app-dev & set \"errorlevel=0\""
-
       - name: Start service
         run: cmd /c "pm2 start app.py --name greetings-app-dev --interpreter python3 -- --port 7001" 
           
@@ -56,24 +49,19 @@ jobs:
     name: tests-on-dev
     runs-on: self-hosted
     needs: deploy-to-dev
-    
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/tests-on-dev
-
       - name: tests-on-dev
         run: echo Testing the dev environment...
-
       - name: Clone course-js-api-framework repository
         uses: actions/checkout@v3.5.2
         with:
           repository: mtararujs/course-js-api-framework
           path: course-js-api-framework
-      
       - name: Install dependencies
         working-directory: course-js-api-framework
         run: npm install
-
       - name: Run tests on dev environment
         working-directory: course-js-api-framework
         run: npm run greetings greetings_dev
@@ -82,10 +70,8 @@ jobs:
       name: deploy-to-staging
       runs-on: self-hosted
       needs: tests-on-dev
-    
       steps:
         - uses: actions/checkout@v3.5.2
-
         - name: deploy-to-staging
           run: echo Deploying to staging...
           
@@ -93,11 +79,9 @@ jobs:
       name: tests-on-staging
       runs-on: self-hosted
       needs: deploy-to-staging
-    
       steps:
         - uses: actions/checkout@v4
         - uses: ./.github/actions/tests-on-staging
-
         - name: tests-on-staging
           run: echo Tests on staging...
         
@@ -105,10 +89,8 @@ jobs:
       name: deploy-to-preprod
       runs-on: self-hosted
       needs: tests-on-staging
-    
       steps:
         - uses: actions/checkout@v3.5.2
-
         - name: deploy-to-preprod
           run: echo Deploying to pre-production...
         
@@ -116,11 +98,9 @@ jobs:
       name: tests-on-preprod
       runs-on: self-hosted
       needs:  deploy-to-preprod
-    
       steps:
         - uses: actions/checkout@v4
         - uses: ./.github/actions/tests-on-preprod
-
         - name: tests-on-preprod
           run: echo Testing the pre-production...
         
@@ -128,10 +108,8 @@ jobs:
       name: deploy-to-prod
       runs-on: self-hosted
       needs: tests-on-preprod
-    
       steps:
         - uses: actions/checkout@v3.5.2
-
         - name: deploy-to-prod
           run: echo Deploying to production...
         
@@ -139,10 +117,8 @@ jobs:
       name: tests-on-prod
       runs-on: self-hosted
       needs: deploy-to-prod
-    
       steps:
         - uses: actions/checkout@v4
         - uses: ./.github/actions/tests-on-prod
-
         - name: tests-on-prod
           run: echo Testing the production...
