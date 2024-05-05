@@ -14,13 +14,18 @@ jobs:
     runs-on: self-hosted
     
     steps:
-      - name: Clone python-greetings
+      - name: Clone python-greetings repository
         uses: actions/checkout@v3.5.2
         with:
           repository: mtararujs/python-greetings
+          path: python-greetings
+          ref: 4e911440a9886c7c26ccbb4eb55f0bc2a5067b51
+          fetch-depth: 0
         
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          cd python-greetings
+          pip3 install -r requirements.txt
         
   deploy-to-dev:
     name: deploy-to-dev
@@ -28,17 +33,25 @@ jobs:
     needs: install-pip-deps
     
     steps:
-      - name: Clone python-greetings repository
-        uses: actions/checkout@v3.5.2    
+      - name: deploy-to-dev
+        uses: actions/checkout@v3.5.2
+        
+      - name: Izvade
+        run: echo Deploying to dev
 
-      - name: Clone python-greetings repository
+      - name: Checkout python-greetings repository
         uses: actions/checkout@v3.5.2
         with:
-          repository: mtararujs/python-greetings
-          path: C:\Users\Admin\Documents\RTU\actions-runner\_work\github-actions-soboleva\github-actions-soboleva\new-folder
-          method: https://github.com/mtararujs/python-greetings
+          repository: 'mtararujs/python-greetings'
+          path: 'python-greetings'
+          ref: '4e911440a9886c7c26ccbb4eb55f0bc2a5067b51'
+      
+      - name: Stop existing service
+        run: cmd /c "pm2 delete greetings-app-dev & set \"errorlevel=0\""
 
-        
+      - name: Start service
+        run: cmd /c "pm2 start app.py --name greetings-app-dev --interpreter python3 -- --port 7001" 
+          
   tests-on-dev:
     name: tests-on-dev
     runs-on: self-hosted
@@ -50,6 +63,20 @@ jobs:
 
       - name: tests-on-dev
         run: echo Testing the dev environment...
+
+      - name: Clone course-js-api-framework repository
+        uses: actions/checkout@v3.5.2
+        with:
+          repository: mtararujs/course-js-api-framework
+          path: course-js-api-framework
+      
+      - name: Install dependencies
+        working-directory: course-js-api-framework
+        run: npm install
+
+      - name: Run tests on dev environment
+        working-directory: course-js-api-framework
+        run: npm run greetings greetings_dev
         
   deploy-to-staging:
       name: deploy-to-staging
@@ -57,8 +84,7 @@ jobs:
       needs: tests-on-dev
     
       steps:
-        - uses: actions/checkout@v4
-        - uses: ./.github/actions/deploy-to-staging
+        - uses: actions/checkout@v3.5.2
 
         - name: deploy-to-staging
           run: echo Deploying to staging...
@@ -81,8 +107,7 @@ jobs:
       needs: tests-on-staging
     
       steps:
-        - uses: actions/checkout@v4
-        - uses: ./.github/actions/ deploy-to-preprod
+        - uses: actions/checkout@v3.5.2
 
         - name: deploy-to-preprod
           run: echo Deploying to pre-production...
@@ -105,8 +130,7 @@ jobs:
       needs: tests-on-preprod
     
       steps:
-        - uses: actions/checkout@v4
-        - uses: ./.github/actions/deploy-to-prod
+        - uses: actions/checkout@v3.5.2
 
         - name: deploy-to-prod
           run: echo Deploying to production...
@@ -122,4 +146,3 @@ jobs:
 
         - name: tests-on-prod
           run: echo Testing the production...
-        
